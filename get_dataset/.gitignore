@@ -1,0 +1,28 @@
+# PlatformIO - file generati
+.pio/
+.pioenvs/
+.piolibdeps/
+
+# ESP-IDF - compilazione
+build/
+sdkconfig.old
+
+# VS Code - configurazioni locali
+.vscode/
+
+# Credenziali e segreti
+.env
+.env.*
+secrets.h
+
+# Python - file temporanei
+__pycache__/
+*.pyc
+
+# File temporanei di diagnostica
+modifiche.txt
+
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
