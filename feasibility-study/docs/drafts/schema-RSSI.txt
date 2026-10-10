@@ -1,0 +1,10 @@
+|   Router Wifi (tramissione del segnale)         |
+|      |                                          |
+|      v                                          |
+|   Esp32-c6 (lettura RSI)                        | 
+|      |                                          |
+|      v                                          |
+|   Monitor Seriale (Timestamp e potenza in dBm)  |
+|      |                                          |
+|      v                                          |
+|   Dataset CSV (Analisi del Dataset)             |
