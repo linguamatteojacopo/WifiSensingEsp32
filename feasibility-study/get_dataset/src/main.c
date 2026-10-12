@@ -44,7 +44,7 @@ static void wifi_event_handler(
     if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_START) 
     {
     
-        ESP_LOGI(TAG, "Wi-Fi avviato, connessione al router...");
+        ESP_LOGI(TAG, "Wi-Fi %s avviato, connessione al router...", WIFI_SSID);
 
         //richiesta di connessione all' AP configurato
         ESP_ERROR_CHECK(esp_wifi_connect());
@@ -99,8 +99,6 @@ void app_main(void)
 
     // Configurazione della rete tramite associazione station mode con Wifi-Password
     ESP_ERROR_CHECK(esp_wifi_set_config(WIFI_IF_STA, &wifi_config));
-
-
 
     /*Avvio del driver wifi secondo la modalità precedentemente specificata*/
     ESP_ERROR_CHECK(esp_wifi_start());
