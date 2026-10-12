@@ -53,12 +53,34 @@ static void wifi_event_handler(
     else if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_CONNECTED)
     {
         ESP_LOGI(TAG, "ESP32 connesso al router!");
+        
+        //struttura per gestire le info necessarie per l' AP: RSSI, CSI...
+        wifi_ap_record_t ap_info = {0};
+
+        //Leggiamo le informazioni relative all' AP associato
+        esp_err_t err = esp_wifi_sta_get_ap_info(&ap_info);
+
+        //Verifica che la lettura dell' RSSI sia riuscita
+        if(err==ESP_OK){
+            ESP_LOGI(TAG, "RSSI rilevato: %d dBm", ap_info.rssi);
+        }
+        else
+        {
+              ESP_LOGE(TAG, "Errore lettura RSSI: %s",esp_err_to_name(err));
+        }
+
     }
     // Informazioni di disconnessione
     else if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_DISCONNECTED)
     {
         wifi_event_sta_disconnected_t *disconnected = (wifi_event_sta_disconnected_t *)event_data;
         ESP_LOGE(TAG, "Connessione Wi-Fi fallita/interrotta. Motivo: %d", disconnected->reason);
+    }
+    //Indirizzo IP
+    else if (event_base == IP_EVENT && event_id == IP_EVENT_STA_GOT_IP)
+    {   
+        ip_event_got_ip_t *event = (ip_event_got_ip_t *)event_data;
+        ESP_LOGI(TAG, "Indirizzo IP ottenuto: " IPSTR, IP2STR(&event->ip_info.ip));
     }
 }     
 
@@ -93,6 +115,9 @@ void app_main(void)
 
      //registrazione della funzione che reagisce a ogni eventotramite ESP_EVENT_ANY_ID
     ESP_ERROR_CHECK(esp_event_handler_register(WIFI_EVENT,ESP_EVENT_ANY_ID,&wifi_event_handler,NULL));
+
+    //registrazione dell' evento di acquisizione dell' indirizzo IP
+    ESP_ERROR_CHECK(esp_event_handler_register(IP_EVENT,IP_EVENT_STA_GOT_IP,&wifi_event_handler,NULL));
 
     /* configurazione del driver Wi-Fi in modalità station, cioè dispositivo che si connette ad un AP (Access Point) */
     ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
