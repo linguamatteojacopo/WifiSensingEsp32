@@ -26,3 +26,6 @@ modifiche.txt
 # Sistema operativo
 .DS_Store
 Thumbs.db
+
+#Configurazioni wifi_secrets.h
+include/wifi_secrets.h

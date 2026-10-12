@@ -1,0 +1,7 @@
+#ifndef WIFI_SECRETS_H
+#define WIFI_SECRETS_H
+
+#define WIFI_SSID "INSERISCI_SSID"
+#define WIFI_PASSWORD "INSERISCI_PASSWORD"
+
+#endif
