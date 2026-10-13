@@ -5,6 +5,7 @@
 #include "esp_event.h" //inizializzazione sistema di gestione degli eventi
 #include "esp_wifi.h"
 #include <assert.h>
+#include "rssi_task.h"
 
 //static const char *TAG = "WIFI_SENSING";
 /*
@@ -26,6 +27,8 @@ static const char *TAG = "WIFI_SENSING"; //puntatore statico
             .password = WIFI_PASSWORD   // Password della rete
         }
     };
+
+
 
 /*
  * Event handler per gli eventi Wi-Fi.
@@ -70,7 +73,7 @@ static void wifi_event_handler(
         }
 
     }
-    // Informazioni di disconnessione
+    // Informazioni di disconnessione 
     else if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_DISCONNECTED)
     {
         wifi_event_sta_disconnected_t *disconnected = (wifi_event_sta_disconnected_t *)event_data;
@@ -128,4 +131,6 @@ void app_main(void)
     /*Avvio del driver wifi secondo la modalità precedentemente specificata*/
     ESP_ERROR_CHECK(esp_wifi_start());
 
+    //avvio del lask di lettura dell' RSSI
+    rssi_task_start();
 }
