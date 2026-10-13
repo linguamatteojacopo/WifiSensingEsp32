@@ -1,0 +1,3 @@
+#aggiunta dipendenze mqtt
+dependencies:
+  espressif/mqtt: "*"
