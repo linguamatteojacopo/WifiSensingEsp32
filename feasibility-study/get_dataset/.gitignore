@@ -30,5 +30,9 @@ Thumbs.db
 #Configurazioni wifi_secrets.h
 include/wifi_secrets.h
 
+#Configurazioni mqtt_secrets.h
+include/mqtt_secrets.h
+
 #managed_components
 managed_components/
+
