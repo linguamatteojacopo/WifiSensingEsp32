@@ -5,11 +5,13 @@
     *   l' uso del single-core
     *   Il task viene quindi gestito dallo scheduler di FreeRTOS
 */
+#include "mqtt_task.h"
 #include "rssi_task.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "esp_wifi.h"
 #include "esp_log.h"
+#include "esp_timer.h"
 
 static const char *TAG = "RSSI_TASK";
 
@@ -23,7 +25,15 @@ static void rssi_task(void *pvParameters)
 
         if (err == ESP_OK)
         {
+            int rssi = ap_info.rssi;
+            //uptime_ms --> tempo trascorso dall' avvio del dispositivo
+            uint32_t uptime_ms = (uint32_t)(esp_timer_get_time() / 1000);
             ESP_LOGI(TAG, "RSSI: %d dBm", ap_info.rssi);
+
+            esp_err_t result = mqtt_publish_rssi(rssi, uptime_ms);
+
+            if(result != ESP_OK)
+                  ESP_LOGW(TAG, "Campione non pubblicato");
         }
         else
         {

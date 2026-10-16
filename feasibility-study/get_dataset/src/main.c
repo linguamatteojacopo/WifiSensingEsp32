@@ -4,6 +4,7 @@
 #include "esp_netif.h" //gestisce lo stack di rete TCP/IP
 #include "esp_event.h" //inizializzazione sistema di gestione degli eventi
 #include "esp_wifi.h"
+#include "mqtt_task.h"
 #include <assert.h>
 #include "rssi_task.h"
 
@@ -78,12 +79,27 @@ static void wifi_event_handler(
     {
         wifi_event_sta_disconnected_t *disconnected = (wifi_event_sta_disconnected_t *)event_data;
         ESP_LOGE(TAG, "Connessione Wi-Fi fallita/interrotta. Motivo: %d", disconnected->reason);
+
+        //tento di effettuare una riconnessione
+        esp_err_t err = esp_wifi_connect();
+
+        if (err != ESP_OK)
+            ESP_LOGE(TAG,"Errore riconnessione: %s", esp_err_to_name(err));
     }
-    //Indirizzo IP
+    //Ottenimento Indirizzo IP con conseguente avvio di Mosquitto
     else if (event_base == IP_EVENT && event_id == IP_EVENT_STA_GOT_IP)
     {   
         ip_event_got_ip_t *event = (ip_event_got_ip_t *)event_data;
         ESP_LOGI(TAG, "Indirizzo IP ottenuto: " IPSTR, IP2STR(&event->ip_info.ip));
+
+        //avvio di Mosquitto
+        static bool mqtt_started=false;
+
+        if(!mqtt_started)
+        {
+            mqtt_started=true;
+            mqtt_init();
+        }
     }
 }     
 
