@@ -7,6 +7,7 @@
 #include "mqtt_task.h"
 #include <assert.h>
 #include "rssi_task.h"
+#include "csi_task.h" //task per la gestione del CSI
 
 //static const char *TAG = "WIFI_SENSING";
 /*
@@ -91,6 +92,13 @@ static void wifi_event_handler(
     {   
         ip_event_got_ip_t *event = (ip_event_got_ip_t *)event_data;
         ESP_LOGI(TAG, "Indirizzo IP ottenuto: " IPSTR, IP2STR(&event->ip_info.ip));
+
+        //AVVIO ACQUISIZIONE CSI
+        esp_err_t err = csi_init();
+
+        if (err != ESP_OK) {
+                ESP_LOGE("WIFI_SENSING","Impossibile inizializzare CSI: %s",esp_err_to_name(err));
+            }
 
         //avvio di Mosquitto
         static bool mqtt_started=false;
